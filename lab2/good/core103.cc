@@ -8,4 +8,4 @@ int main() {
   return j;
 }
 
-void printInt(int x) { }
+//void printInt(int x) { }

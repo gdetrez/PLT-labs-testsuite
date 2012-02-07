@@ -1,5 +1,6 @@
 int main() {
   printInt(f(45));
+  printInt(f(450));
   return 0;
 }
 
@@ -12,4 +13,4 @@ int f(int x) {
   }
 }
 
-void printInt(int x) { }
+//void printInt(int x) { }

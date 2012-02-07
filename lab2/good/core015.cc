@@ -15,5 +15,5 @@ int ev (int y) {
       return 1 ;
 }
 
-void printInt(int x) { }
-void printDouble(double x) { }
+//void printInt(int x) { }
+//void printDouble(double x) { }

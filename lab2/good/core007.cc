@@ -6,5 +6,5 @@ int main() {
  return 0 ;
 }
 
-void printInt(int x) { }
-void printDouble(double x) { }
+//void printInt(int x) { }
+//void printDouble(double x) { }

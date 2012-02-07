@@ -3,5 +3,5 @@ int main () {
   return 0;
 }
 
-void printInt(int x) { }
-int readInt() { return 4; }
+//void printInt(int x) { }
+//int readInt() { return 4; }

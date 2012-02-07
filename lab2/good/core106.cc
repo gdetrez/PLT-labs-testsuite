@@ -4,4 +4,4 @@ int main () {
   printInt(i+j);
   return 0;
 }
-void printInt(int x) { }
+//void printInt(int x) { }

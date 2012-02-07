@@ -50,5 +50,5 @@ bool eq_bool(bool x, bool y) {
 			
 }
 
-void printInt(int x) { }
-void printDouble(double x) { }
+//void printInt(int x) { }
+//void printDouble(double x) { }

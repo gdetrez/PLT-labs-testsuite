@@ -1,5 +1,5 @@
-void printInt(int x) { }
-void printDouble(double x) { }
+//void printInt(int x) { }
+//void printDouble(double x) { }
 
 int
 main() {

@@ -16,5 +16,5 @@ int fac (int a) {
   return r;
 }
 
-void printInt(int x) { }
-void printDouble(double x) { }
+//void printInt(int x) { }
+//void printDouble(double x) { }

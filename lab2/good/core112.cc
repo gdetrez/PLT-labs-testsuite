@@ -9,4 +9,4 @@ int main() {
   return 0;
 }
 
-void printDouble(double x) { }
+//void printDouble(double x) { }
