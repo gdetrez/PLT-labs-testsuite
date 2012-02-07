@@ -15,6 +15,13 @@ import System.IO
 import System.Process
 import System.IO.Unsafe
 
+
+-- Executable name
+-- TODO: make an option
+--EXEC_NAME :: String
+executable_name = "lab2"
+
+
 {-# NOINLINE doDebug #-}
 doDebug :: IORef Bool
 doDebug = unsafePerformIO $ newIORef False
@@ -42,12 +49,12 @@ runMake dir = do checkDirectoryExists dir
 
 runTests :: FilePath -> IO ([Bool],[Bool])
 runTests dir = 
-    do let prog = joinPath [dir,"lab3"]
+    do let prog = joinPath [dir,executable_name]
        checkFileExists prog
        goodProgs <- listGoodProgs
        badProgs  <- listBadProgs
        good <- mapM (testBackendProg prog) goodProgs
-       bad  <- mapM (testBackendProg prog) badProgs
+       bad  <- mapM (testBadProgram prog) badProgs
        return (good,bad)
 
 
@@ -65,6 +72,20 @@ testBackendProg prog f =
 		 putStrLn "Expected output:"
 		 putStrLn $ color blue $ output
                  return False
+
+testBadProgram :: FilePath -> FilePath -> IO Bool
+testBadProgram prog f =
+    do input  <- readFileIfExists (f++".input")
+       output <- readFileIfExists (f++".output")
+       let c = prog ++ " " ++ f
+       putStrLn $ "Running " ++ f ++ "..."
+       (out,err,s) <- runCommandStrWait c input
+       debug $ "Exit code: " ++ show s
+       case lines out of
+           "TYPE ERROR":_ -> return True
+           "SYNTAX ERROR":_ -> return True
+           _ -> do reportError c "Passed bad program" f "" out err
+                   return False
 
 --
 -- * Main
@@ -165,7 +186,7 @@ red, green, blue, black :: Color
 black = 0
 red = 1
 green = 2
-blue = 4
+blue = 6
 
 --
 -- * Various versions of runCommand

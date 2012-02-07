@@ -9,7 +9,7 @@ int main () {
 	printInt(i);
 	false && i++ > 0;
 	printInt(i);
-	int j;
+	int j = 0;
 	if (34 < 6 && j < 0) {
 		printInt(i);
 	} else { 
