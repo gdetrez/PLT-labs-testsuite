@@ -14,13 +14,18 @@ import System.Exit
 import System.IO
 import System.Process
 import System.IO.Unsafe
-
+import System.Console.GetOpt
+    
 
 -- Executable name
 -- TODO: make an option
 --EXEC_NAME :: String
 executable_name = "lab2"
 
+
+{-# NOINLINE useColors #-}
+useColors :: IORef Bool
+useColors = unsafePerformIO $ newIORef True
 
 {-# NOINLINE doDebug #-}
 doDebug :: IORef Bool
@@ -29,7 +34,6 @@ doDebug = unsafePerformIO $ newIORef False
 debug :: String -> IO ()
 debug s = do d <- readIORef doDebug
              if d then putStrLn s else return ()
-
 
 listGoodProgs = listCCFiles "good"
 
@@ -70,7 +74,7 @@ testBackendProg prog f =
          then return True
          else do reportError c "invalid output" f input out err
 		 putStrLn "Expected output:"
-		 putStrLn $ color blue $ output
+		 cPutStrLn blue output
                  return False
 
 testBadProgram :: FilePath -> FilePath -> IO Bool
@@ -92,12 +96,27 @@ testBadProgram prog f =
 --
 
 parseArgs :: [String] -> IO String
-parseArgs ["-debug",cfFile] = 
-    do writeIORef doDebug True
-       return cfFile
-parseArgs [cfFile] = return cfFile
-parseArgs _ = do hPutStrLn stderr "Usage: progs-test-lab3 <interpreter code directory>"
-                 exitFailure
+-- parseArgs ["-debug",cfFile] = 
+--    do writeIORef doDebug True
+--       return cfFile
+--
+-- parseArgs [cfFile] = return cfFile
+-- parseArgs _ = usage
+parseArgs argv = case getOpt Permute flags argv of
+  (args,[pathToLab],[]) -> do
+    sequence args
+    return pathToLab
+  (_,_,errs)      -> do
+    hPutStrLn stderr $ concat errs
+    usage
+    exitWith (ExitFailure 1)
+
+usage :: IO a
+usage = do
+  hPutStrLn stderr $
+    usageInfo header flags   
+  exitFailure
+  where header  ="Usage: progs-test-lab3 <interpreter code directory>"
 
 mainOpts :: FilePath -> IO ()
 mainOpts dir = 
@@ -108,6 +127,16 @@ mainOpts dir =
        putStrLn "------------------------------------------------------------"
        report "Good programs: " good
        report "Bad programs:  " bad
+
+
+flags =
+  [Option ['d'] ["debug"]       (NoArg $ writeIORef doDebug True)
+   "Print debug informations."
+  ,Option [] ["no-colors"]       (NoArg $ writeIORef useColors False)
+   "Do not use colors in the output"
+  ,Option []    ["help"] (NoArg usage)
+  "Print this help message"
+  ]
 
 main :: IO ()
 main = getArgs >>= parseArgs >>= mainOpts
@@ -172,9 +201,6 @@ catLefts xs = [x | Left x <- xs]
 
 type Color = Int
 
-color :: Color -> String -> String
-color c s = fgcol c ++ s ++ normal
-
 highlight = "\ESC[7m"
 bold      = "\ESC[1m"
 underline = "\ESC[4m"
@@ -187,6 +213,14 @@ black = 0
 red = 1
 green = 2
 blue = 6
+
+cPutStrLn :: Color -> String -> IO ()
+cPutStrLn c s = do
+  d <- readIORef useColors
+  putStrLn $ if d then color c s else s
+  where color :: Color -> String -> String
+        color c s = fgcol c ++ s ++ normal
+
 
 --
 -- * Various versions of runCommand
@@ -255,13 +289,13 @@ runCommandNoFail e f =
 checkFileExists :: FilePath -> IO ()
 checkFileExists f =
     do e <- doesFileExist f
-       when (not e) $ do putStrLn $ color red $ quote f ++ " is not an existing file."
+       when (not e) $ do cPutStrLn red $ quote f ++ " is not an existing file."
 		         exitFailure
 
 checkDirectoryExists :: FilePath -> IO ()
 checkDirectoryExists f =
     do e <- doesDirectoryExist f
-       when (not e) $ do putStrLn $ color red $ quote f ++ " is not an existing directory."
+       when (not e) $ do cPutStrLn red $ quote f ++ " is not an existing directory."
 		         exitFailure
 
 readFileIfExists :: FilePath -> IO String
@@ -281,17 +315,17 @@ reportErrorColor :: Color
 	         -> IO ()
 reportErrorColor col c m f i o e =
     do
-    putStrLn $ color col $ c ++ " failed: " ++ m
+    cPutStrLn col $ c ++ " failed: " ++ m
     when (not (null f)) $ prFile f
     when (not (null i)) $ do
 			  putStrLn "Given this input:"
-			  putStrLn $ color blue $ i
+			  cPutStrLn blue i
     when (not (null o)) $ do
 			  putStrLn "It printed this to standard output:"
-			  putStrLn $ color blue $ o
+			  cPutStrLn blue o
     when (not (null e)) $ do
 			  putStrLn "It printed this to standard error:"
-			  putStrLn $ color blue $ e
+			  cPutStrLn blue e
 
 reportError :: String -- ^ command that failed
 	    -> String -- ^ how it failed
@@ -308,7 +342,7 @@ prFile f = do
            when e $ do putStrLn $ "For input file " ++ f ++ ":"
 	               putStrLn $ "---------------- begin " ++ f ++ " ------------------" 
 	               s <- readFile f
-	               putStrLn $ color green s
+	               cPutStrLn green s
 	               putStrLn $ "----------------- end " ++ f ++ " -------------------" 
 
 
@@ -317,5 +351,5 @@ report :: String -> [Bool] -> IO ()
 report n rs = 
   do let (p,t) = (length (filter id rs), length rs)
          c = if p == t then green else red
-     putStrLn $ color c $ 
+     cPutStrLn c $ 
               n ++ "passed " ++ show p ++ " of " ++ show t ++ " tests"

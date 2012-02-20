@@ -1,0 +1,22 @@
+Building the testsuite
+======================
+
+To build the testsuite, the easiest is to use the provied makefile:
+
+  $ make
+
+If you don't have gnu make installed, you can use this command 
+
+  $ ghc -threaded --make -o progs-test-lab2 progs-test-lab2.hs
+
+
+Running the testsuite
+=====================
+
+To run the testsuite, you first have to be in its directory:
+
+  $ cd lab2-testsuite
+
+Run progs-test-lab2 with the path to the directory where your solution is located:
+  $ ./progs-test-lab2 path/to/your/solution/
+
