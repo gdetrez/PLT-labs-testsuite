@@ -39,15 +39,18 @@ bool implies(bool x, bool y) {
 }
 
 bool not(bool x) {
-	if (x) return false; else return true;
+  bool r ;
+  if (x) r = false; else r = true;
+  return r ;
 }
 
 bool eq_bool(bool x, bool y) {
+  bool r ;
 	if (x) 
-		return y;
+		r = y;
 	else 
-		return not(y);
-			
+		r = not(y);
+	return r ;	
 }
 
 //void printInt(int x) { }

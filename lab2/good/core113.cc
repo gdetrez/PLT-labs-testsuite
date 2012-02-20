@@ -5,12 +5,14 @@ int main() {
 }
 
 int f(int x) {
+  int y ;
   if (x < 100) {
     int x = 91;
-    return x;
+    y = x;
   } else {
-    return x;
+    y = x;
   }
+  return y ;
 }
 
 //void printInt(int x) { }

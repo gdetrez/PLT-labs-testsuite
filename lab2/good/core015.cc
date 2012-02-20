@@ -6,13 +6,15 @@ int main () {
 }
 
 int ev (int y) {
+  int e ;
   if (y > 0)
-    return ev (y-2) ;
+    e = ev (y-2) ;
   else
     if (y < 0)
-      return 0 ;
+      e = 0 ;
     else
-      return 1 ;
+      e = 1 ;
+  return e ;
 }
 
 //void printInt(int x) { }

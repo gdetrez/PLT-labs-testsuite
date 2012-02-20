@@ -38,49 +38,59 @@ fac(int a) {
 int
 rfac(int n)
 {
+  int f ;
 	if (n == 0)
-		return 1;
+		f = 1;
 	else
-		return n * rfac(n-1);
+		f = n * rfac(n-1);
+	return f ;
 }
 
 int
 mfac(int n)
 {
+  int f ;
 	if (n == 0)
-		return 1;
+		f = 1;
 	else
-		return n * nfac(n-1);
+		f = n * nfac(n-1);
+	return f ;
 }
 
 int
 nfac(int n)
 {
+  int f ;
 	if (n != 0)
-		return mfac(n-1) * n;
+		f = mfac(n-1) * n;
 	else
-		return 1;
+		f = 1;
+	return f ;
 }
 
 double
 dfac(double n)
 {
+  double f ;
 	if (n == 0.0)
-		return 1.0;
+		f = 1.0;
 	else
-		return n * dfac(n-1.0);
+		f = n * dfac(n-1.0);
+	return f ;
 }
 
 int ifac(int n) { return ifac2f(1,n); }
 
 int ifac2f(int l, int h) {
+  int f ;
         if (l == h)
-                return l;
+                f = l;
         else if (l > h)
-                return 1;
+                f = 1;
 	else {
 		int m;
 		m = (l+h) / 2;
-		return ifac2f(l,m) * ifac2f(m+1,h);
+		f = ifac2f(l,m) * ifac2f(m+1,h);
 	}
+	return f ;
 }
