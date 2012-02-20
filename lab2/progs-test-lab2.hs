@@ -70,12 +70,17 @@ testBackendProg prog f =
        putStrLn $ "Running " ++ f ++ "..."
        (out,err,s) <- runCommandStrWait c input
        debug $ "Exit code: " ++ show s
-       if out == output 
-         then return True
-         else do reportError c "invalid output" f input out err
-		 putStrLn "Expected output:"
-		 cPutStrLn blue output
-                 return False
+       case s of
+         ExitFailure n -> do
+           reportError c ("Program stopped with code " ++ show n) \
+             f input out err
+           return False
+         ExitSuccess | out == output -> return True
+         ExitSuccess | otherwise -> do
+           reportError c "invalid output" f input out err
+           putStrLn "Expected output:"
+           cPutStrLn blue output
+           return False
 
 testBadProgram :: FilePath -> FilePath -> IO Bool
 testBadProgram prog f =
