@@ -23,6 +23,10 @@ import System.Console.GetOpt
 executable_name = "lab2"
 
 
+{-# NOINLINE testsPath #-}
+testsPath :: IORef String
+testsPath = unsafePerformIO $ newIORef "."
+
 {-# NOINLINE useColors #-}
 useColors :: IORef Bool
 useColors = unsafePerformIO $ newIORef True
@@ -35,17 +39,21 @@ debug :: String -> IO ()
 debug s = do d <- readIORef doDebug
              if d then putStrLn s else return ()
 
+listGoodProgs :: IO [String]
 listGoodProgs = listCCFiles "good"
 
+listBadProgs :: IO [String]
 listBadProgs = listCCFiles "bad"
 
-listCCFiles dir = 
-    liftM (map (\f -> joinPath [dir,f]) . sort . filter ((=="cc") . getExt)) $ getDirectoryContents dir
-
+listCCFiles :: String -> IO [String]
+listCCFiles dir = do
+  dir' <-  readIORef testsPath >>= return . joinPath . (:[dir])
+  print dir'
+  liftM (map (\f -> joinPath [dir',f]) . sort . filter ((=="cc") . getExt)) $
+    getDirectoryContents dir'
 
 welcome :: IO ()
-welcome = do putStrLn $ "This is the test program for Programming Languages Lab 3"
-
+welcome = do putStrLn $ "This is the test program for Programming Languages Lab 2"
 
 runMake :: FilePath -> IO ()
 runMake dir = do checkDirectoryExists dir
@@ -137,6 +145,8 @@ mainOpts dir =
 flags =
   [Option ['d'] ["debug"]       (NoArg $ writeIORef doDebug True)
    "Print debug informations."
+  ,Option ['p'] ["testspath"]       (ReqArg (writeIORef testsPath) "PATH")
+   "Do not use colors in the output"
   ,Option [] ["no-colors"]       (NoArg $ writeIORef useColors False)
    "Do not use colors in the output"
   ,Option []    ["help"] (NoArg usage)
