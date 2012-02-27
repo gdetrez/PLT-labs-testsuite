@@ -7,5 +7,5 @@ int main ()
   printInt(i) ;   //6
   printInt(++i) ; //7
   printInt(i) ;   //7
-
+  return 0;
 }

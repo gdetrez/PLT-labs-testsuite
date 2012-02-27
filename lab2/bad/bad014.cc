@@ -13,5 +13,5 @@ int main() {
   }
   printInt(x);
   printInt(y);
-  return y;
+  return true;
 }

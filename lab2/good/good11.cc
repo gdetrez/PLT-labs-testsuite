@@ -10,5 +10,5 @@ int main ()
     num++ ;
   }
   printInt(sum/num) ;
-
+  return 0;
 }

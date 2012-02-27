@@ -6,12 +6,11 @@ int main () {
     y = y - 2;
   if (y < 0) {
     printInt(0);
-    return 0 ;
-    }
+  }
   else {
     printInt(1);
-    return 0 ;
-    }
+  }
+  return 0 ;
 }
 
 //void printInt(int x) { }

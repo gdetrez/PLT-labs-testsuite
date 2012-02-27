@@ -10,5 +10,5 @@ int main ()
     ++i ;
   }
   printInt(ret) ;
-
+  return 0;
 }
